@@ -4,3 +4,290 @@
 *:after {
   box-sizing: border-box;
 }
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* General layout */
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+/* Navigation Bar */
+nav {
+  background-color: #000; /* Black background */
+  padding: 15px 0; /* Padding for vertical spacing */
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 15px;
+  color: white; /* White text */
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  color: #007BFF; /* Light blue hover color */
+}
+
+/* Welcome Section */
+.welcome {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.welcome h1 {
+  font-size: 2em;
+  color: #333;
+}
+
+.delorean-intro h2 {
+  font-size: 1.5em;
+  color: #007BFF; /* Blue color for the "DMC Delorean" text */
+}
+
+.delorean-intro p {
+  font-size: 1em;
+  color: #333;
+  line-height: 1.5;
+}
+
+.btn-primary {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.delorean-image {
+  width: 60%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+/* Upgrades and Reviews Section */
+.content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.upgrades, .reviews {
+  width: 45%;
+}
+
+.upgrades h2, .reviews h2 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Upgrade Items */
+.upgrade-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.upgrade-item {
+  width: 100px;
+  text-align: center;
+}
+
+.upgrade-item img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.upgrade-item a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.upgrade-item a:hover {
+  text-decoration: underline;
+}
+
+/* Reviews */
+.reviews ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.reviews ul li {
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.reviews ul li::before {
+  content: "“";
+  font-size: 1.2em;
+  color: #007BFF;
+  vertical-align: top;
+}
+
+.reviews ul li::after {
+  content: "”";
+  font-size: 1.2em;
+  color: #007BFF;
+  vertical-align: bottom;
+}
+
+/* Footer */
+footer {
+  text-align: left;
+  padding: 10px;
+  font-size: 0.9em;
+  color: #666;
+  border-top: 1px solid #ddd;
+}
+/* Header */
+#top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff; /* White background for header */
+}
+
+.siteName a {
+  color: #000; /* Black text for CSE Motors */
+  text-decoration: none;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#tools a {
+  color: #000; /* Black text for My Account */
+  text-decoration: none;
+  font-size: 1em;
+}
+
+#tools a:hover {
+  color: #007BFF; /* Blue color on hover */
+}
+.upgrade-item {
+  border: 1px solid #ccc; /* Add a border */
+  /*padding: 20px; /* Add padding */
+  margin: 10px; /* Add margin */
+  background-color: #f0f0f0; /* Add background color */
+  text-align: center; /* Center content */
+}
+.upgrade-item img {
+  display: block;
+  margin: 0 auto;
+}
+/* box for main */
+body {
+  border: 1px solid #ccc;
+  margin: 20px auto;
+  width: 80%; /* Adjust width as needed */
+  background-color: white;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+main, footer{
+  background-color: white;
+}
+/*background behing main box */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/site/small_check.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -1; 
+}
+/* Welcome Section */
+.welcome {
+  display: flex;
+  padding: 20px;
+}
+
+.delorean-intro {
+  flex: 1; /* Take up space on the left */
+  max-width: 300px; /* Adjust the width as needed */
+  text-align: left;
+}
+
+.delorean-intro h2 {
+  font-size: 1.5em;
+  color: #007BFF; /* Blue color for the heading */
+}
+
+.delorean-intro p {
+  font-size: 1em;
+  color: #333;
+  line-height: 1.5;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Image Container */
+.image-container {
+  flex: 1; /* Take up space in the center */
+  display: flex;
+  justify-content: center; /* Center the image within the container */
+  max-width: 60%; /* Control the maximum width of the image container */
+}
+
+.delorean-image {
+  width: 100%; /* Ensure the image scales within the container */
+  height: auto;
+  border-radius: 8px;
+}
