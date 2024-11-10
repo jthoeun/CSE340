@@ -167,7 +167,7 @@ nav ul li a:hover {
 /* Reviews */
 .reviews ul {
   list-style-type: disc;
-  padding: 20;
+  padding: 20px;
 }
 
 .reviews ul li {
