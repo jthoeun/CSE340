@@ -50,13 +50,32 @@ nav ul li a:hover {
 
 /* Welcome Section */
 .welcome {
+  position: relative;
+  padding: 20px;
   text-align: center;
-  margin-bottom: 30px;
 }
 
 .welcome h1 {
   font-size: 2em;
   color: #333;
+  z-index: 2;
+  position: relative;
+  margin-bottom: 20px;
+}
+.delorean-image {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1; 
+}
+.delorean-intro {
+  left: 0; 
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
 .delorean-intro h2 {
@@ -71,6 +90,7 @@ nav ul li a:hover {
 }
 
 .btn-primary {
+  display: inline-block;
   background-color: #007BFF;
   color: white;
   padding: 10px 20px;
@@ -89,7 +109,9 @@ nav ul li a:hover {
 .delorean-image {
   width: 60%;
   max-width: 400px;
-  margin-top: 20px;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1; /* Positioned below h1 but above background */
 }
 
 /* Upgrades and Reviews Section */
@@ -185,7 +207,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #fff; /* White background for header */
+  background-color: #fff; 
 }
 
 .siteName a {
@@ -196,19 +218,19 @@ footer {
 }
 
 #tools a {
-  color: #000; /* Black text for My Account */
+  color: #000; 
   text-decoration: none;
   font-size: 1em;
 }
 
 #tools a:hover {
-  color: #007BFF; /* Blue color on hover */
+  color: #007BFF; 
 }
 .upgrade-item {
-  border: 1px solid #ccc; /* Add a border */
-  margin: 10px; /* Add margin */
-  background-color: #f0f0f0; /* Add background color */
-  text-align: center; /* Center content */
+  border: 1px solid #ccc; 
+  margin: 10px; 
+  background-color: #f0f0f0; 
+  text-align: center; 
 }
 .upgrade-item img {
   display: block;
@@ -219,13 +241,23 @@ body {
   border: 1px solid #ccc;
   margin: 20px auto;
   width: 80%; 
-  background-color: white;
+  background-color: transparent;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+/* hides box in mobile view */
+@media (max-width: 767px) {
+  body {
+      border: none;
+      margin: 0;
+      width: 100%;
+      background-color: white;
+      box-shadow: none;
+  }
 }
 main, footer{
   background-color: white;
 }
-/*background behing main box */
+
 .background {
   position: fixed;
   top: 0;
@@ -237,14 +269,15 @@ main, footer{
   background-position: center;
   z-index: -1; 
 }
-/* Welcome Section */
-.welcome {
-  display: flex;
-  padding: 20px;
+
+@media (max-width: 767px) {
+  .background {
+      display: none;
+  }
 }
 
 .delorean-intro {
-  flex: 1; /* Take up space on the left */
+  flex: 1;
   max-width: 300px; /* Adjust the width as needed */
   text-align: left;
 }
@@ -279,14 +312,11 @@ main, footer{
 
 /* Image Container */
 .image-container {
-  flex: 1; /* Take up space in the center */
+  position: relative;
   display: flex;
-  justify-content: center; /* Center the image within the container */
-  max-width: 60%; /* Control the maximum width of the image container */
-}
-
-.delorean-image {
-  width: 100%; /* Ensure the image scales within the container */
-  height: auto;
-  border-radius: 8px;
+  justify-content: center; 
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
