@@ -35,7 +35,8 @@ nav ul {
 
 nav ul li {
   margin: 0 15px;
-  color: white; /* White text */
+  color: #1CE9C6;
+  font-weight: bold;
 }
 
 nav ul li a {
@@ -155,7 +156,7 @@ nav ul li a:hover {
 }
 
 .upgrade-item a {
-  color: #007BFF;
+  color: #1CE9C6;
   text-decoration: none;
   font-weight: bold;
 }
@@ -216,7 +217,7 @@ footer {
 .upgrade-item {
   border: 1px solid #ccc; 
   margin: 10px; 
-  background-color: orange; 
+  background-color: #121212; 
   text-align: center; 
 }
 .upgrade-item img {
@@ -283,7 +284,7 @@ main, footer{
 
 .btn-primary {
   display: inline-block;
-  background-color: #007BFF;
+  background-color: #0000FF;
   color: white;
   padding: 10px 20px;
   border: none;
