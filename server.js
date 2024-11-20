@@ -13,18 +13,19 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/index")
+
 /* ***********************
  * View Engine and Template
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout")//not at view point
+app.set("layout", "./layouts/layout") // Layout configuration
 
 /* ***********************
  * Routes
  *************************/
 app.use(static)
-//Index route
+// Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
 app.use("/inv", inventoryRoute)
@@ -40,7 +41,12 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
+  let message
+  if(err.status == 404) {
+    message = err.message
+  } else {
+    message = 'Oh no! There was a crash. Maybe try a different route?'
+  }
   res.render("errors/error", {
     title: err.status || 'Server Error',
     message,
