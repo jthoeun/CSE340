@@ -1,5 +1,7 @@
-<% const d = new Date()
-let year = d.getFullYear()%>
+<% const d = new Date() %>
+<% let year = d.getFullYear() %>
 <footer>
     <p class="copyright">&copy; <%= year %>, CES 340 App</p>
+    <!-- Link to trigger intentional error -->
+    <p><a href="/inv/trigger-error" title="error 500">Trigger Intentional Error</a></p>
 </footer>

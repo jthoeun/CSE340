@@ -1,25 +1,40 @@
+<%# Vehicle Detail View %>
+<% if (title) { %>
+  <h1><%= title %></h1> <!-- Display the vehicle make and model as the main heading -->
+<% } else {
+  res.redirect('/')
+} %>
+
 <main class="vehicle-detail">
   <div class="container">
-    <h1><%= title %></h1> <!-- Display the vehicle make and model as the main heading -->
-    
-    <section class="vehicle-content">
-      <div class="vehicle-image">
-        <img src="/images/vehicles/<%= vehicle.inv_image %>" alt="Image of <%= vehicle.inv_make %> <%= vehicle.inv_model %>">
-      </div>
+      <!-- Vehicle Image Section -->
+      <section class="vehicle-content">
+          <div class="vehicle-image">
+              <!-- Show the vehicle image, dynamically based on the database image path -->
+              <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+          </div>
 
-      <div class="vehicle-info">
-        <p><strong>Make:</strong> <%= vehicle.inv_make %></p>
-        <p><strong>Model:</strong> <%= vehicle.inv_model %></p>
-        <p><strong>Year:</strong> <%= vehicle.inv_year %></p>
-        <p><strong>Price:</strong> $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
-        <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(vehicle.inv_mileage) %> miles</p>
-        <p><strong>Color:</strong> <%= vehicle.inv_color %></p> <!-- Add color -->
-        
-        <h3>Description</h3>
-        <p><%= vehicle.inv_description %></p>
-        
-        <a href="#" class="btn-primary">Contact Dealer</a> <!-- Optional: link for contacting dealer -->
-      </div>
-    </section>
+          <!-- Vehicle Info Section -->
+          <div class="vehicle-info">
+              <!-- Make and Model -->
+              <p><strong>Make:</strong> <%= vehicle.inv_make %></p>
+              <p><strong>Model:</strong> <%= vehicle.inv_model %></p>
+              <p><strong>Year:</strong> <%= vehicle.inv_year %></p>
+
+              <!-- Price with proper formatting -->
+              <p><strong>Price:</strong> $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
+
+              <!-- Mileage (inv_miles) with proper formatting -->
+              <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(vehicle.inv_miles) %> miles</p>
+
+              <!-- Description -->
+              <h3>Description</h3>
+              <p><%= vehicle.inv_description %></p>
+
+              <!-- Color -->
+              <p><strong>Color:</strong> <%= vehicle.inv_color %></p>
+
+          </div>
+      </section>
   </div>
 </main>

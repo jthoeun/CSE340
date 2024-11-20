@@ -1,12 +1,22 @@
-// Needed Resources 
-const express = require("express")
-const router = new express.Router() 
-const invController = require("../controllers/invController")
+const express = require("express");
+const invController = require("../controllers/invController");
+const router = express.Router();
 
-// Route to build inventory by classification view
+/* ***************************
+ * Inventory Routes
+ * *************************** */
+
+// Route to view inventory by classification
 router.get("/type/:classificationId", invController.buildByClassificationId);
 
-// Route for displaying details of a specific vehicle by ID
+// Route to view a specific vehicle's details
 router.get("/vehicle/:inv_id", invController.buildVehicleDetail);
 
+// Intentional Error Route
+router.get("/trigger-error", (req, res, next) => {
+    const error = new Error("This is an intentional 500 error!");
+    error.status = 500;  // Set the status code to 500
+    next(error);  // Pass the error to the error-handling middleware
+  });
+  
 module.exports = router;

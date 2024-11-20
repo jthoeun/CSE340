@@ -27,11 +27,7 @@ Util.getNav = async function () {
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
-
-
-module.exports = Util
-
+Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 
 /* **************************************
@@ -46,12 +42,11 @@ Util.buildClassificationGrid = async function (data) {
     // Loop through each vehicle and build the grid item
     data.forEach((vehicle) => {
       grid += "<li>";
-      grid += `<a href="../../inv/vehicle/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
+      grid += `<a href="/inv/vehicle/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
       grid += `<img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model} on CSE Motors" />`;
       grid += "</a>";
       grid += '<div class="namePrice">';
-      grid += "<hr />";
-      grid += `<h2><a href="../../inv/vehicle/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
+      grid += `<h2><a href="/inv/vehicle/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
       grid += `${vehicle.inv_make} ${vehicle.inv_model}</a></h2>`;
       grid += `<span>$${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</span>`;
       grid += "</div>";

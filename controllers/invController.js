@@ -37,16 +37,12 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     });
   }
   
-  // Generate the HTML for the vehicle details page
-  const vehicleDetailHTML = await utilities.buildVehicleDetail(vehicle);
-  
+  // Pass the vehicle data to the view
   let nav = await utilities.getNav();
-  
-  // Render the vehicle detail page with the vehicle's data
-  res.render("./inventory/vehicle-detail", {
-    title: `${vehicle.inv_make} ${vehicle.inv_model}`,  // Dynamic page title
+  res.render("./inventory/vehicle", { 
+    title: `${vehicle.inv_make} ${vehicle.inv_model}`,  // Dynamic title with make and model
     nav,
-    vehicleDetailHTML,  // Pass the vehicle details HTML to the view
+    vehicle,  // Pass the full vehicle object to the view
   });
 };
 
