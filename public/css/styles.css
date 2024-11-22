@@ -180,7 +180,6 @@ nav ul li a:hover {
   color: #333;
 }
 
-
 /* Footer */
 footer {
   text-align: left;
@@ -248,7 +247,6 @@ main, footer{
   background-position: center;
   z-index: -1; 
 }
-
 
 .delorean-intro {
   flex: 1;
