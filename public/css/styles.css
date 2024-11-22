@@ -21,7 +21,7 @@
 
 /* Navigation Bar */
 nav {
-  background-color: #000; /* Black background */
+  background-color: #BCFBDD; 
   padding: 15px 0; /* Padding for vertical spacing */
 }
 
@@ -345,7 +345,7 @@ main, footer{
 #inv-display li .namePrice span {
   display: block;
   font-size: 16px;
-  color: #888;
+  color: black;
   margin-top: 5px;
 }
 
