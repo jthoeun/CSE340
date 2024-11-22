@@ -4,13 +4,12 @@
 <% } else {
   res.redirect('/')
 } %>
-
+<div class="background"></div>
 <main class="vehicle-detail">
   <div class="container">
       <!-- Vehicle Image Section -->
       <section class="vehicle-content">
           <div class="vehicle-image">
-              <!-- Show the vehicle image, dynamically based on the database image path -->
               <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
           </div>
 

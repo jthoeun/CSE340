@@ -233,16 +233,6 @@ body {
   background-color: transparent;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
-/* hides box in mobile view */
-@media (max-width: 767px) {
-  body {
-      border: none;
-      margin: 0;
-      width: 100%;
-      background-color: white;
-      box-shadow: none;
-  }
-}
 main, footer{
   background-color: white;
 }
@@ -259,11 +249,6 @@ main, footer{
   z-index: -1; 
 }
 
-@media (max-width: 767px) {
-  .background {
-      display: none;
-  }
-}
 
 .delorean-intro {
   flex: 1;
@@ -321,31 +306,31 @@ main, footer{
 
 /* Styling for each individual card (li element) */
 #inv-display li {
-  background-color: #fff; /* White background for cards */
-  border: 1px solid #ddd; /* Light border around each card */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow around the card */
+  background-color: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  flex-direction: column; /* Ensures content is stacked vertically */
+  flex-direction: column; 
   justify-content: space-between;
-  text-align: center; /* Center text inside the card */
-  padding: 20px; /* Adds some padding inside the card */
+  text-align: center; 
+  padding: 20px;
 }
 
 /* Hover effect for cards */
 #inv-display li:hover {
-  transform: translateY(-5px); /* Lift the card slightly */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  transform: translateY(-5px); 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
 }
 
 /* Styling for the image */
 #inv-display li img {
-  width: 100%; /* Ensure the image takes the full width */
-  height: auto; /* Maintain aspect ratio */
-  border-bottom: 1px solid #ddd; /* Add a separator between the image and content */
-  margin-bottom: 15px; /* Space between image and text */
+  width: 100%; 
+  height: auto; 
+  border-bottom: 1px solid #ddd; 
+  margin-bottom: 15px; 
 }
 
 /* Styling for the content (name and price) */
@@ -364,4 +349,82 @@ main, footer{
   font-size: 16px;
   color: #888;
   margin-top: 5px;
+}
+
+/*Detail Page */
+.vehicle-detail {
+  margin: auto;
+  max-width: 1200px;
+  padding: 15px;
+}
+
+.container {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.vehicle-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.vehicle-image {
+  flex: 1 1 300px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-info {
+  flex: 2 1 400px;
+  padding: 10px;
+}
+
+.vehicle-info p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.vehicle-info strong {
+  color: #000;
+}
+
+.vehicle-info h3 {
+  font-size: 1.5em;
+  margin-top: 20px;
+  color: #555;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+@media (max-width: 768px) {
+  .background {
+    display: none;
+}
+body {
+  border: none;
+  margin: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: none;
+}
+
+  .vehicle-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .vehicle-info {
+    padding: 0;
+  }
 }
