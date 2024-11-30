@@ -1,0 +1,46 @@
+<%# Content Header %>
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else {
+      res.redirect('/')
+    } %>
+<div class="background"></div>
+  <!-- Flash Message -->
+  <% if (flashMessage) { %>
+    <div class="alert alert-success"><%= flashMessage %></div>
+  <% } %>
+
+  <!-- Display Errors -->
+  <% if (errors && errors.length > 0) { %>
+    <ul class="notice">
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <!-- Add Classification Form -->
+  <form action="/inv/add-classification" method="POST" id="addClassificationForm" class="form">
+    <div class="form-group">
+      <label for="classification_name">Classification Name:</label>
+      <input type="text" id="classification_name" name="classification_name" 
+             value="<%= locals.classification_name || '' %>" 
+             required placeholder="Enter the classification name" class="form-control">
+      <small class="form-text text-muted">No spaces or special characters allowed.</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Classification</button>
+  </form>
+
+
+<script>
+  // Client-side validation to ensure no spaces or special characters
+  const form = document.getElementById('addClassificationForm');
+  form.addEventListener('submit', function(e) {
+    const classificationName = document.getElementById('classification_name').value;
+    const regex = /^[A-Za-z0-9]+$/;
+    if (!regex.test(classificationName)) {
+      e.preventDefault(); 
+      alert('The classification name must only contain letters and numbers with no spaces or special characters.');
+    }
+  });
+</script>

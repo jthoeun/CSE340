@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const utilities = require("../utilities");
 const accountModel = require("../models/account-model");
 
@@ -10,7 +11,8 @@ async function buildLogin(req, res, next) {
         res.render("account/login", {
             title: "Login",
             nav,
-            errors: null, // Initialize errors as null
+            errors: null,
+            flashMessage: req.flash("notice") || null, 
         });
     } catch (err) {
         next(err); // Pass errors to the error-handling middleware
@@ -26,8 +28,8 @@ async function buildRegister(req, res, next) {
         res.render("account/register", {
             title: "Register",
             nav,
-            errors: null, // Initialize errors as null
-            flashMessage: req.flash ? req.flash("info") : null,
+            errors: null, 
+            flashMessage: req.flash ? req.flash("info") : null, 
         });
     } catch (err) {
         next(err); // Pass errors to the error-handling middleware
@@ -42,36 +44,46 @@ async function registerAccount(req, res, next) {
         let nav = await utilities.getNav();
         const { account_firstname, account_lastname, account_email, account_password } = req.body;
 
+        // Hash the password before storing
+        let hashedPassword;
+        try {
+            // Regular password and cost (salt is generated automatically)
+            hashedPassword = await bcrypt.hash(account_password, 10);
+        } catch (error) {
+            req.flash("notice", "Sorry, there was an error processing the registration.");
+            return res.status(500).render("account/register", {
+                title: "Registration",
+                nav,
+                errors: null,
+            });
+        }
+
         // Attempt to register the account
         const regResult = await accountModel.registerAccount(
             account_firstname,
             account_lastname,
             account_email,
-            account_password
+            hashedPassword
         );
 
         if (regResult) {
             // Registration successful
             req.flash(
                 "notice",
-                `Congratulations, you're registered, ${account_firstname}. Please log in.`
+                `Congratulations, ${account_firstname}! Your account has been successfully created. Please log in.`
             );
-            res.status(201).render("account/login", {
-                title: "Login",
-                nav,
-                errors: null, 
-            });
+            return res.redirect("/account/login"); // Redirect to login page
         } else {
             // Registration failed
             req.flash("notice", "Sorry, the registration failed.");
-            res.status(501).render("account/register", {
+            return res.status(501).render("account/register", {
                 title: "Registration",
                 nav,
                 errors: [{ msg: "Registration failed. Please try again." }], // Add a general error message
             });
         }
     } catch (err) {
-        next(err); 
+        next(err);
     }
 }
 

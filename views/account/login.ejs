@@ -4,15 +4,23 @@
       res.redirect('/')
     } %>
     
-<% if (typeof flashMessage !== "undefined" && flashMessage) { %>
-    <div class="flash-message"><%= flashMessage %></div>
-<% } %>
-
+    <% if (flashMessage) { %>
+        <div class="alert alert-success"><%= flashMessage %></div>
+    <% } %>
+    
+    <% if (errors) { %>
+        <ul class="notice">
+       <% errors.array().forEach(error => { %>
+         <li><%= error.msg %></li>
+      <%  }) %>
+       </ul>
+      <% } %>
+      <div class="background"></div>
 <!-- Login Form -->
 <form action="/account/login" method="POST" class="login-form">
     <div class="form-group">
         <label for="account_email">Email Address:</label>
-        <input type="email" id="account_email" name="account_email" placeholder="Enter your email" required>
+        <input type="email" id="account_email" name="account_email" placeholder="Enter your email" required value="<%= locals.account_email %>">
     </div>
     <div class="form-group">
         <label for="account_password">Password:</label>

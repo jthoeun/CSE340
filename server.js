@@ -18,6 +18,7 @@ const accountRoute = require("./routes/accountRoute");
 const utilities = require("./utilities/index");
 const bodyParser = require("body-parser");
 
+
 /* ***********************
  * Middleware
  * ************************/
@@ -34,10 +35,12 @@ app.use(session({
 
 // Express Messages Middleware
 app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
-  next()
-})
+
+app.use(function (req, res, next) {
+  res.locals.messages = require("express-messages")(req, res);
+  res.locals.flashMessage = req.flash("notice");
+  next();
+});
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded

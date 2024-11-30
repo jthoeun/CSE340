@@ -5,41 +5,53 @@ const Util = {};
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function () {
-  // Get classifications from the model
-  let data = await invModel.getClassifications();
-  let list = "<ul>";
-  list += '<li><a href="/" title="Home page">Home</a></li>';
-  
-  // Loop through the classifications and create the nav list
-  data.rows.forEach((row) => {
-    list += "<li>";
-    list +=
-      `<a href="/inv/type/${row.classification_id}" title="See our inventory of ${row.classification_name} vehicles">${row.classification_name}</a>`;
-    list += "</li>";
-  });
-  
-  list += "</ul>";
-  return list;
+  try {
+    let data = await invModel.getClassifications();  // Fetch classifications from the database
+    let list = "<ul>";
+    list += '<li><a href="/" title="Home page">Home</a></li>';
+    
+    // Loop through classifications and create the navigation list
+    data.rows.forEach((row) => {
+      list += "<li>";
+      list +=
+        `<a href="/inv/type/${row.classification_id}" title="See our inventory of ${row.classification_name} vehicles">${row.classification_name}</a>`;
+      list += "</li>";
+    });
+    list += "</ul>";
+    return list;
+  } catch (error) {
+    console.error("Error fetching classifications:", error);
+    throw new Error("Unable to fetch classifications");
+  }
 };
 
 /* ****************************************
  * Middleware For Handling Errors
- * Wrap other function in this for 
- * General Error Handling
  **************************************** */
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+Util.handleErrors = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
 
+/* *******************************
+ * Get Classifications from DB
+ ******************************* */
+Util.getClassifications = async function () {
+  try {
+    const result = await invModel.getClassifications();  // Query the classifications from the database
+    return result.rows;  // Return the rows of classification data
+  } catch (error) {
+    console.error("Error fetching classifications:", error);
+    throw new Error("Unable to fetch classifications");
+  }
+};
 
 /* **************************************
  * Build the classification view HTML
- * ************************************ */
+ ************************************ */
 Util.buildClassificationGrid = async function (data) {
   let grid = "";
   
   if (data.length > 0) {
     grid = '<ul id="inv-display">';
-    
-    // Loop through each vehicle and build the grid item
     data.forEach((vehicle) => {
       grid += "<li>";
       grid += `<a href="/inv/vehicle/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
@@ -62,7 +74,7 @@ Util.buildClassificationGrid = async function (data) {
 
 /* **************************************
  * Build Vehicle Detail View HTML
- * ************************************ */
+ ************************************ */
 Util.buildVehicleDetail = async function (vehicle) {
   let detail = `<h1>${vehicle.inv_make} ${vehicle.inv_model} ${vehicle.inv_year}</h1>`;
   detail += `<div class="vehicle-image"><img src="/images/vehicles/${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}"></div>`;
