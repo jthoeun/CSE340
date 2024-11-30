@@ -6,9 +6,9 @@
 
 <div class="background"></div>
 
-<% if (errors) { %>
+<% if (errors && errors.length > 0) { %>
   <ul class="notice">
-    <% errors.array().forEach(error => { %>
+    <% errors.forEach(error => { %>
       <li><%= error.msg %></li>
     <% }) %>
   </ul>
@@ -22,14 +22,14 @@
     </div>
   <% } %>
 
-  <form action="/inv/add-inventory" method="POST" class="add-inventory-form">
+  <form action="/inv/add-inventory" method="POST" class="add-inventory-form" id="addInventoryForm">
     <div class="form-group">
       <label for="classification_id">Classification:</label>
       <select id="classification_id" name="classification_id" required>
         <option value="">-- Select Classification --</option>
         <% classificationOptions.forEach(option => { %>
           <option value="<%= option.classification_id %>"
-            <%= option.classification_id == inv_classification_id ? 'selected' : '' %> >
+            <%= option.classification_id == classification_id ? 'selected' : '' %> >
             <%= option.classification_name %>
           </option>
         <% }) %>
@@ -62,7 +62,7 @@
     </div>
   
     <div class="form-group">
-      <label for="img_thumbnail">Thumbnail URL:</label>
+      <label for="inv_thumbnail">Thumbnail URL:</label>
       <input type="text" id="inv_thumbnail" name="inv_thumbnail" value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>" required placeholder="Enter thumbnail URL" class="form-control" />
     </div>
   
@@ -83,4 +83,42 @@
   
     <button type="submit" class="btn btn-primary">Add Vehicle</button>
   </form>
+
+  <script>
+    // Real-time validation logic
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById("addInventoryForm");
+      const inputs = form.querySelectorAll("input, textarea, select");
+
+      // Check if input has at least 3 characters
+      function checkTextInput(input) {
+        if (input.value.length >= 3) {
+          input.style.borderColor = "green";
+        } else if (input.value.trim() === "") {
+          input.style.borderColor = "red";
+        } else {
+          input.style.borderColor = "red";
+        }
+      }
+
+      // Check if number input contains at least one digit
+      function checkNumberInput(input) {
+        const value = input.value.trim();
+        if (value && !isNaN(value) && value >= 1) {
+          input.style.borderColor = "green";
+        } else {
+          input.style.borderColor = "red";
+        }
+      }
+
+      // Attach listeners for real-time validation
+      inputs.forEach(input => {
+        if (input.type === "text" || input.type === "textarea") {
+          input.addEventListener("input", () => checkTextInput(input));
+        } else if (input.type === "number") {
+          input.addEventListener("input", () => checkNumberInput(input));
+        }
+      });
+    });
+  </script>
 </main>
