@@ -13,7 +13,7 @@ invCont.buildManagement = async function (req, res, next) {
     res.render("inventory/management", {
       title: "Inventory Management",
       nav,
-      flashMessage: req.flash("notice") || null,
+      flashMessage: req.flash("notice") || null,  // Display flash messages if any
     });
   } catch (err) {
     next(err);
@@ -29,8 +29,8 @@ invCont.buildAddClassification = async function (req, res, next) {
     res.render("inventory/add-classification", {
       title: "Add New Classification",
       nav,
-      flashMessage: req.flash("notice") || null,
-      errors: null,
+      flashMessage: req.flash("notice") || null,  // Display flash message if exists
+      errors: null,  // No errors initially
     });
   } catch (err) {
     next(err);
@@ -43,6 +43,7 @@ invCont.buildAddClassification = async function (req, res, next) {
 invCont.addClassification = async function (req, res, next) {
   const { classification_name } = req.body;
 
+  // Simple validation (ensure no special characters or spaces)
   if (!/^[A-Za-z0-9]+$/.test(classification_name)) {
     req.flash("notice", "The classification name must only contain letters and numbers.");
     return res.status(400).render("inventory/add-classification", {
@@ -54,7 +55,7 @@ invCont.addClassification = async function (req, res, next) {
   }
 
   try {
-    const result = await invModel.addClassification(classification_name);
+    const result = await invModel.addClassification(classification_name);  // Insert into database
 
     if (result) {
       req.flash("notice", `Classification "${classification_name}" added successfully!`);
@@ -84,17 +85,17 @@ invCont.buildAddInventory = async function (req, res, next) {
       title: "Add Inventory",
       nav,
       classificationOptions,
-      errors: null,
+      errors: null,  // No initial errors
+      classification_id: req.body.classification_id || '',
       inv_make: req.body.inv_make || '',
       inv_model: req.body.inv_model || '',
       inv_year: req.body.inv_year || '',
       inv_description: req.body.inv_description || '',
-      inv_image: req.body.inv_image || '',
-      inv_thumbnail: req.body.inv_thumbnail || '',
+      inv_image: req.body.inv_image || '/images/vehicles/no-image.png',
+      inv_thumbnail: req.body.inv_thumbnail || '/images/vehicles/no-image-tn.png',
       inv_price: req.body.inv_price || '',
       inv_miles: req.body.inv_miles || '',
       inv_color: req.body.inv_color || '',
-      inv_classification_id: req.body.classification_id || '',  // Ensure this is passed
     });
   } catch (err) {
     next(err);
@@ -118,17 +119,16 @@ invCont.addInventory = async function (req, res, next) {
       inv_price,
       inv_miles,
       inv_color,
-    } = req.body;    
+    } = req.body;
 
-    // Get validation errors
-    const errors = validationResult(req);
+    const errors = validationResult(req);  // Get validation errors
     if (!errors.isEmpty()) {
       return res.status(400).render("inventory/add-inventory", {
         title: "Add Inventory",
         nav,
         errors: errors.array(),
         classificationOptions: await utilities.getClassifications(),
-        inv_classification_id: classification_id,
+        classification_id,
         inv_make,
         inv_model,
         inv_year,
@@ -164,7 +164,7 @@ invCont.addInventory = async function (req, res, next) {
         nav,
         classificationOptions: await utilities.getClassifications(),
         errors: null,
-        inv_classification_id: classification_id,
+        classification_id,
         inv_make,
         inv_model,
         inv_year,
@@ -202,22 +202,22 @@ invCont.buildByClassificationId = async function (req, res, next) {
  * Build vehicle detail view
  * *************************** */
 invCont.buildVehicleDetail = async function (req, res, next) {
-  const inv_id = req.params.inv_id;  // Retrieve the vehicle ID from the URL
+  const inv_id = req.params.inv_id;
 
   const vehicle = await invModel.getVehicleById(inv_id);
-  
+
   if (!vehicle) {
     return res.status(404).render("404", {
       title: "Vehicle Not Found",
       nav: await utilities.getNav(),
     });
   }
-  
+
   let nav = await utilities.getNav();
-  res.render("./inventory/vehicle", { 
-    title: `${vehicle.inv_make} ${vehicle.inv_model}`, 
+  res.render("./inventory/vehicle", {
+    title: `${vehicle.inv_make} ${vehicle.inv_model}`,
     nav,
-    vehicle,  
+    vehicle,
   });
 };
 

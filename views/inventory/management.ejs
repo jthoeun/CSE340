@@ -1,19 +1,21 @@
 <% if (title) { %>
-    <h1><%= title %></h1>
-    <% } else {
-      res.redirect('/')
-    } %>
-    <div class="background"></div>
-    <!-- Flash Message -->
-  <% if (flashMessage) { %>
-    <div class="alert alert-success"><%= flashMessage %></div>
-  <% } %>
+  <h1><%= title %></h1>
+<% } else {
+  res.redirect('/');
+} %>
 
-  <!-- Title and Heading -->
-  <p>Welcome to the inventory management page. Choose an action below:</p>
+<div class="background"></div>
 
-  <!-- Links -->
-  <div class="management-links">
-    <a href="/inv/add-classification" class="btn btn-primary">Add New Classification</a>
-    <a href="/inv/add-inventory" class="btn btn-primary">Add New Inventory</a>
-  </div>
+<!-- Flash Message -->
+<% if (flashMessage) { %>
+  <div class="alert alert-success"><%= flashMessage %></div>
+<% } %>
+
+<!-- Title and Heading -->
+<p>Welcome to the inventory management page. Choose an action below:</p>
+
+<!-- Links -->
+<div class="management-links">
+  <a href="/inv/add-classification" class="btn btn-primary">Add New Classification</a>
+  <a href="/inv/add-inventory" class="btn btn-primary">Add New Inventory</a>
+</div>

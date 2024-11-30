@@ -1,7 +1,8 @@
 const express = require("express");
 const invController = require("../controllers/invController");
-const utilities = require("../utilities"); 
-const regValidate = require("../utilities/account-validation"); 
+const utilities = require("../utilities");
+const inventoryValidate = require("../utilities/inventory-validation"); // Keep inventory validation as is
+const classificationValidate = require("../utilities/classification-validation"); // Import the new classification validation
 const router = express.Router();
 
 /* ***************************
@@ -18,28 +19,28 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 router.get("/vehicle/:inv_id", utilities.handleErrors(invController.buildVehicleDetail));
 
 // Route to add new classification
-router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification));
+router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification)); // Show form
 router.post(
   "/add-classification",
-  regValidate.classificationValidationRules(), 
-  regValidate.checkRegData, 
-  utilities.handleErrors(invController.addClassification)
+  classificationValidate.classificationValidationRules(), // Use the new classification validation rules
+  classificationValidate.checkClassificationData,          // Check classification data
+  utilities.handleErrors(invController.addClassification) // Handle classification form submission
 );
 
 // Route to add new inventory
 router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventory));
 router.post(
   "/add-inventory",
-  regValidate.inventoryValidationRules(),
-  regValidate.checkRegData,
+  inventoryValidate.inventoryValidationRules(), // Continue using inventory validation for inventory routes
+  inventoryValidate.checkInventoryData, 
   utilities.handleErrors(invController.addInventory)
 );
 
 // Intentional Error Route
 router.get("/trigger-error", (req, res, next) => {
   const error = new Error("This is an intentional 500 error!");
-  error.status = 500; 
-  next(error); 
+  error.status = 500; // Set the status code to 500
+  next(error); // Pass the error to the error-handling middleware
 });
 
 module.exports = router;
