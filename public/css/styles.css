@@ -512,6 +512,8 @@ main, footer {
   /* Adjust Navigation for mobile */
   nav ul {
     flex-direction: column; /* Stack the navigation items vertically on small screens */
+    justify-content: center;
+    align-items: center;
   }
 
   nav ul li {
