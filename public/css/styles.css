@@ -760,5 +760,5 @@ input:valid, textarea:valid, select:valid {
 }
 
 input:invalid, textarea:invalid, select:invalid {
-  background-color: #ffdddd; /
+  background-color: #ffdddd;
 }
