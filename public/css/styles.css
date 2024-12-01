@@ -559,16 +559,49 @@ main, footer {
   }
 }
 
-/* Flash Message */
+/* Flash Message Styling */
 .flash-message {
-  background-color: #ffeb3b;
-  color: #000;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
+  background-color: #ffdddd; /* Light red background */
+  color: #d8000c; /* Red text color */
+  border: 1px solid #d8000c; /* Red border */
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-weight: bold; 
+  list-style: none; 
   text-align: center;
-  border-radius: 3px;
-  z-index: 1000; 
-  position: relative;
+}
+
+.flash-message ul {
+  padding: 0;
+  margin: 0;
+  list-style: none; /* Remove bullet points for list items */
+}
+
+.flash-message li {
+  margin-bottom: 5px;
+}
+/* Notice Styling (for Add Inventory Page) */
+.notice {
+  background-color: #ffdddd; /* Light red background */
+  color: #d8000c; /* Red text color */
+  border: 1px solid #d8000c; /* Red border */
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-weight: bold; 
+  list-style: none; 
+  text-align: left; 
+}
+
+.notice ul {
+  padding: 0;
+  margin: 0;
+  list-style: none; 
+}
+
+.notice li {
+  margin-bottom: 5px; 
 }
 
 /* Form Styles */
