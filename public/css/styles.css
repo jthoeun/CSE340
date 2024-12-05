@@ -762,3 +762,85 @@ input:valid, textarea:valid, select:valid {
 input:invalid, textarea:invalid, select:invalid {
   background-color: #ffdddd;
 }
+
+/* Styling for the Classification Dropdown */
+#classificationList {
+  width: 200px; /* Adjust the width as needed */
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Space below the dropdown */
+  background-color: #f9f9f9; /* Light background color */
+  transition: border-color 0.3s ease;
+}
+
+#classificationList:focus {
+  border-color: #007BFF; /* Change border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Styling for the Inventory Table */
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse; /* Collapse table borders */
+  margin-top: 20px;
+}
+
+#inventoryDisplay thead {
+  background-color: #007BFF;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
+}
+
+#inventoryDisplay th, #inventoryDisplay td {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+}
+
+#inventoryDisplay tbody tr:hover {
+  background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+#inventoryDisplay td a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#inventoryDisplay td a:hover {
+  color: #0056b3; /* Change link color on hover */
+  text-decoration: underline;
+}
+
+/* Add space between rows */
+#inventoryDisplay tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+/* Optional: Styling for the "Modify" and "Delete" buttons */
+#inventoryDisplay td a.modify,
+#inventoryDisplay td a.delete {
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  background-color: #007BFF;
+  color: white;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+#inventoryDisplay td a.modify:hover,
+#inventoryDisplay td a.delete:hover {
+  background-color: #0056b3;
+}
+
+#inventoryDisplay td a.delete {
+  background-color: #e74c3c;
+}
+
+#inventoryDisplay td a.delete:hover {
+  background-color: #c0392b;
+}
