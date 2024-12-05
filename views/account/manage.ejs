@@ -1,0 +1,25 @@
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else { %>
+  <% res.redirect('/') %>
+<% } %>
+
+<div class="background"></div>
+
+<!-- Flash Message -->
+<% if (flashMessage) { %>
+  <div class="flash-message alert alert-success">
+    <%= flashMessage %>
+  </div>
+<% } %>
+
+<!-- Error Messages -->
+<% if (errors && errors.length > 0) { %>
+  <ul class="notice">
+    <% errors.forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<p>You're logged in.</p>
