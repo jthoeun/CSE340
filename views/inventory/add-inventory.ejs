@@ -15,7 +15,7 @@
 <% } %>
 
 
-  <% if (messages && messages.notice) { %>
+<% if (flashMessage && flashMessage.length > 0) { %>
     <div class="flash-message">
       <%= messages.notice %>
     </div>
