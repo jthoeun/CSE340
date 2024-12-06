@@ -30,7 +30,7 @@ validateInventory.inventoryValidationRules = () => {
 };
 
 /* **************************************
- * Check Inventory Data
+ * Check Inventory Data (For Adding Inventory)
  ************************************* */
 validateInventory.checkInventoryData = async (req, res, next) => {
   const {
@@ -64,6 +64,51 @@ validateInventory.checkInventoryData = async (req, res, next) => {
       inv_description,
       inv_image,
       inv_thumbnail,
+      inv_miles,
+      inv_color,
+    });
+    return;
+  }
+  next();
+};
+
+/* **************************************
+ * Check Update Inventory Data
+ ************************************* */
+validateInventory.checkUpdateData = async (req, res, next) => {
+  const {
+    inv_id,
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+  } = req.body;
+
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    let classificationOptions = await utilities.getClassifications();
+
+    res.render("inventory/edit-inventory", {
+      errors: errors.array(),
+      title: `Edit ${inv_make} ${inv_model}`,  // Title updated to match the edit view title
+      nav,
+      classificationOptions,
+      inv_id,  // Add inv_id to the data being passed to the view
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
       inv_miles,
       inv_color,
     });

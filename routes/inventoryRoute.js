@@ -36,7 +36,22 @@ router.post(
   utilities.handleErrors(invController.addInventory)
 );
 
-// Intentional Error Route
+// Route to show edit inventory page
+router.get("/edit/:inv_id", utilities.handleErrors(invController.editInventory));
+
+// Route to update inventory
+router.post(
+  "/edit/:inv_id",  // Make sure this matches the form action URL
+  inventoryValidate.inventoryValidationRules(),  // Validate input data
+  inventoryValidate.checkInventoryData,           // Check for errors in validation
+  utilities.handleErrors(invController.updateInventory) // Process the update
+);
+// Route for incoming request
+router.post("/edit/", invController.updateInventory)
+
+/* ***************************
+ * Intentional Error Route
+ * *************************** */
 router.get("/trigger-error", (req, res, next) => {
   const error = new Error("This is an intentional 500 error!");
   error.status = 500;
