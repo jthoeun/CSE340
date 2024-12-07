@@ -157,6 +157,67 @@ invCont.updateInventory = async function (req, res, next) {
 };
 
 /* ***************************
+ * Build Delete Confirmation View
+ * *************************** */
+invCont.deleteConfirmation = async function (req, res, next) {
+  const inv_id = parseInt(req.params.inv_id); // Collect inventory ID from the URL
+  if (isNaN(inv_id)) {
+    console.log("Invalid inv_id:", req.params.inv_id); // Log for debugging
+    return res.status(400).send("Invalid vehicle ID");
+  }
+
+  let nav = await utilities.getNav();
+
+  // Fetch the inventory data using the inv_id from the database
+  const itemData = await invModel.getVehicleById(inv_id);
+
+  // If no data is found for the given inv_id, send a 404 error
+  if (!itemData) {
+    return res.status(404).render("404", {
+      title: "Vehicle Not Found",
+      nav
+    });
+  }
+
+  // Generate a name variable for the inventory item's make and model
+  const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
+
+  // Render the "delete-confirm" view and pass in the necessary data
+  res.render("inventory/delete-confirm", {
+    title: `Delete ${itemName}`, // The title should reflect the vehicle being deleted
+    nav,
+    errors: null, // No errors initially
+    inv_id: itemData.inv_id,
+    inv_make: itemData.inv_make,
+    inv_model: itemData.inv_model,
+    inv_year: itemData.inv_year,
+    inv_price: itemData.inv_price,
+    flashMessage: req.flash("notice"),
+  });
+};
+
+/* ***************************
+ * Process Delete Inventory
+ * ************************** */
+invCont.deleteInventory = async function (req, res, next) {
+  const inv_id = req.body.inv_id; // Get the inv_id from the request body
+
+  try {
+    const deleteResult = await invModel.deleteInventoryItem(inv_id); // Use the model to delete the item
+
+    if (deleteResult) {
+      req.flash("notice", "The vehicle was successfully deleted.");
+      return res.redirect("/inv"); // Redirect to inventory management page after successful deletion
+    } else {
+      req.flash("notice", "Error deleting vehicle. Please try again.");
+      return res.redirect(`/inv/vehicle/${inv_id}`); // Redirect back to the vehicle details page if deletion fails
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ***************************
  * Show Add Classification Form
  * *************************** */
 invCont.buildAddClassification = async function (req, res, next) {

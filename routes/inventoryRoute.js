@@ -2,7 +2,7 @@ const express = require("express");
 const invController = require("../controllers/invController");
 const utilities = require("../utilities");
 const inventoryValidate = require("../utilities/inventory-validation");
-const classificationValidate = require("../utilities/classification-validation"); 
+const classificationValidate = require("../utilities/classification-validation");
 const router = express.Router();
 
 /* ***************************
@@ -46,8 +46,18 @@ router.post(
   inventoryValidate.checkInventoryData,           // Check for errors in validation
   utilities.handleErrors(invController.updateInventory) // Process the update
 );
-// Route for incoming request
-router.post("/edit/", invController.updateInventory)
+
+// Route to show delete confirmation page for an inventory item
+router.get(
+  "/delete/:inv_id",
+  utilities.handleErrors(invController.deleteConfirmation)
+);
+
+// Route to handle deleting an inventory item
+router.post(
+  "/delete/:inv_id",
+  utilities.handleErrors(invController.deleteInventory)
+);
 
 /* ***************************
  * Intentional Error Route
