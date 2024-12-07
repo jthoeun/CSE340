@@ -139,9 +139,25 @@ async function updateInventoryItem(
 
     return data.rows[0]; // Return the updated row
   } catch (error) {
-    console.error("Error updating inventory:", error); // Log any error during SQL execution
+    console.error("Error updating inventory:", error); 
     return null;
   }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventoryItem, updateInventoryItem };
+/* ***************************
+ * Delete Inventory Item
+ * ************************** */
+async function deleteInventoryItem(inv_id) {
+  try {
+    const sql = 'DELETE FROM public.inventory WHERE inv_id = $1';
+    const data = await pool.query(sql, [inv_id]);
+
+    
+    return data.rowCount; 
+  } catch (error) {
+    console.error("Error deleting inventory item:", error); 
+    return 0; 
+  }
+}
+
+module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventoryItem, updateInventoryItem, deleteInventoryItem };
