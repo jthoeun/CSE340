@@ -160,4 +160,5 @@ async function deleteInventoryItem(inv_id) {
   }
 }
 
+
 module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventoryItem, updateInventoryItem, deleteInventoryItem };
