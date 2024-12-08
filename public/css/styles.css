@@ -637,7 +637,7 @@ main, footer {
 .login-form button, .registration-form button, .form-group button {
   width: 100%;
   padding: 1rem;
-  background-color: #4CAF50;
+  background-color: #575757;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -646,7 +646,7 @@ main, footer {
 }
 
 .login-form button:hover, .registration-form button:hover, .form-group button:hover {
-  background-color: #45a049;
+  background-color: #575757;
 }
 .register-link {
   margin-top: 1rem;
@@ -666,7 +666,7 @@ main, footer {
 
 .management-links a {
   padding: 0.8rem 1.2rem;
-  background-color: #4CAF50;
+  background-color: #575757;
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -676,12 +676,12 @@ main, footer {
 }
 
 .management-links a:hover {
-  background-color: #45a049;
+  background-color: #474747;
 }
 /* Add Classification Button Styling */
 .btn-primary {
   display: block; /* Make the button behave like a block element */
-  background-color: #4CAF50; /* Green color for the button */
+  background-color: #575757; /* Green color for the button */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -695,7 +695,7 @@ main, footer {
 }
 
 .btn-primary:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
+  background-color: #474747; /* Slightly darker */
 }
 .add-inventory-form {
   max-width: 600px;
