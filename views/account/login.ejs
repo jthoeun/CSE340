@@ -8,13 +8,15 @@
         <div class="alert alert-success"><%= flashMessage %></div>
     <% } %>
     
-    <% if (errors) { %>
+    <% if (errors && errors.length > 0) { %>
         <ul class="notice">
-       <% errors.array().forEach(error => { %>
-         <li><%= error.msg %></li>
-      <%  }) %>
-       </ul>
+          <% errors.forEach(error => { %>
+            <li><%= error.msg %></li>
+          <% }) %>
+        </ul>
       <% } %>
+
+
       <div class="background"></div>
 <!-- Login Form -->
 <form action="/account/login" method="POST" class="login-form">

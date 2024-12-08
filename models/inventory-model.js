@@ -107,6 +107,7 @@ async function updateInventoryItem(
   classification_id
 ) {
   try {
+    // Step 1: SQL Query to Update Inventory Item
     const sql = `
       UPDATE public.inventory
       SET 
@@ -122,7 +123,8 @@ async function updateInventoryItem(
         classification_id = $10
       WHERE inv_id = $11
       RETURNING *`;  // Ensure we return the updated row
-    
+
+    // Step 2: Run the SQL query with the passed-in values
     const data = await pool.query(sql, [
       inv_make,
       inv_model,
@@ -137,10 +139,17 @@ async function updateInventoryItem(
       inv_id // Ensure the inventory ID is the last parameter
     ]);
 
+    // Step 3: Check if the update was successful
+    if (data.rows.length === 0) {
+      console.log("Inventory update failed: No rows were updated.");
+      return null;  // If no rows were updated, return null
+    }
+
+    // Step 4: Return the updated inventory item
     return data.rows[0]; // Return the updated row
   } catch (error) {
-    console.error("Error updating inventory:", error); 
-    return null;
+    console.error("Error updating inventory:", error); // Log any errors
+    return null; // Return null if there's an error
   }
 }
 
