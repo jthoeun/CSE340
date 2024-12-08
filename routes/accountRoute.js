@@ -11,7 +11,8 @@ const regValidate = require("../utilities/account-validation");
 // Route for account management page (default route)
 router.get(
   "/",
-  utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement)
+  utilities.checkLogin,  // Ensure the user is logged in
+  utilities.handleErrors(accountController.buildAccountManagement)
 );
 
 // Route for login page
@@ -19,6 +20,12 @@ router.get(
   "/login",
   utilities.handleErrors(accountController.buildLogin)
 );
+
+// Logout route to clear the JWT token and redirect to home page
+router.get("/logout", (req, res, next) => {
+  res.clearCookie("jwt");  // Clear the JWT token cookie
+  res.redirect("/");  // Redirect the client to the home page
+});
 
 /* ***************************
  * Registration Routes
@@ -46,6 +53,35 @@ router.post(
   regValidate.loginRules(), 
   regValidate.checkLoginData, 
   utilities.handleErrors(accountController.accountLogin)
+);
+
+/* ***************************
+ * Account Update Routes
+ * *************************** */
+
+// Route to account update page
+router.get(
+  "/update/:account_id",
+  utilities.checkLogin,  // Ensure the user is logged in
+  utilities.handleErrors(accountController.buildUpdate)
+);
+
+// Route to process account update (POST request)
+router.post(
+  "/update",
+  utilities.checkLogin,  // Ensure the user is logged in
+  regValidate.updateAccountValidationRules(),  // Validate account update data
+  regValidate.checkAccountUpdateData,  // Check for validation errors
+  utilities.handleErrors(accountController.updateAccount)
+);
+
+// Route to process password change (POST request)
+router.post(
+  "/update-password",
+  utilities.checkLogin,  // Ensure the user is logged in
+  regValidate.passwordValidationRules(),  // Validate password change data
+  regValidate.checkPasswordData,  // Check for validation errors
+  utilities.handleErrors(accountController.updatePassword)
 );
 
 module.exports = router;

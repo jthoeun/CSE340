@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const invModel = require("../models/inventory-model");
-const Util = {};
+const accountModel = require("../models/account-model");
+const { validationResult } = require("express-validator");
+const utilities = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
-Util.getNav = async function () {
+utilities.getNav = async function () {
   try {
     let data = await invModel.getClassifications();  // Fetch classifications from the database
     let list = "<ul>";
@@ -30,14 +32,20 @@ Util.getNav = async function () {
 /* ****************************************
  * Middleware For Handling Errors
  **************************************** */
-Util.handleErrors = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
+utilities.handleErrors = (fn) => {
+  return (req, res, next) => {
+    // Ensure the provided argument is actually a function
+    if (typeof fn !== 'function') {
+      return next(new Error('The provided argument is not a function'));
+    }
+    // Call the passed function and handle the promise errors
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
 };
-
 /* *******************************
  * Get Classifications from DB
  ******************************* */
-Util.getClassifications = async function () {
+utilities.getClassifications = async function () {
   try {
     const result = await invModel.getClassifications();  // Query the classifications from the database
     return result.rows;  // Return the rows of classification data
@@ -50,7 +58,7 @@ Util.getClassifications = async function () {
 /* **************************************
  * Build the classification view HTML
  ************************************ */
-Util.buildClassificationGrid = async function (data) {
+utilities.buildClassificationGrid = async function (data) {
   let grid = "";
   
   if (data.length > 0) {
@@ -78,7 +86,7 @@ Util.buildClassificationGrid = async function (data) {
 /* **************************************
  * Build Vehicle Detail View HTML
  ************************************ */
-Util.buildVehicleDetail = async function (vehicle) {
+utilities.buildVehicleDetail = async function (vehicle) {
   let detail = `<h1>${vehicle.inv_make} ${vehicle.inv_model} ${vehicle.inv_year}</h1>`;
   detail += `<div class="vehicle-image"><img src="/images/vehicles/${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}"></div>`;
   detail += `<div class="vehicle-info">`;
@@ -94,36 +102,38 @@ Util.buildVehicleDetail = async function (vehicle) {
 /* ****************************************
 * Middleware to check token validity
 **************************************** */
-Util.checkJWTToken = (req, res, next) => {
+utilities.checkJWTToken = (req, res, next) => {
   if (req.cookies.jwt) {
-   jwt.verify(
-    req.cookies.jwt,
-    process.env.ACCESS_TOKEN_SECRET,
-    function (err, accountData) {
-     if (err) {
-      req.flash("Please log in")
-      res.clearCookie("jwt")
-      return res.redirect("/account/login")
-     }
-     res.locals.accountData = accountData
-     res.locals.loggedin = 1
-     next()
-    })
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in");
+          res.clearCookie("jwt");
+          res.locals.loggedin = 0;
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = 1; 
+        next(); 
+      });
   } else {
-   next()
+    res.locals.loggedin = 0; 
+    next();
   }
- }
+};
 
 /* ****************************************
  *  Check Login
  * ************************************ */
-Util.checkLogin = (req, res, next) => {
+utilities.checkLogin = (req, res, next) => {
   if (res.locals.loggedin) {
     next()
   } else {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
- }
+}
 
-module.exports = Util;
+module.exports = utilities;

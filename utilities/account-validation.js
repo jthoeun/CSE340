@@ -1,5 +1,5 @@
 const accountModel = require("../models/account-model");
-const utilities = require(".");
+const utilities = require("../utilities");
 const { body, validationResult } = require("express-validator");
 const validate = {};
 
@@ -13,19 +13,19 @@ validate.registationRules = () => {
       .escape()
       .notEmpty()
       .isLength({ min: 1 })
-      .withMessage("Please provide a first name."), // on error this message is sent.
+      .withMessage("Please provide a first name."),
     
     body("account_lastname")
       .trim()
       .escape()
       .notEmpty()
       .isLength({ min: 2 })
-      .withMessage("Please provide a last name."), // on error this message is sent.
+      .withMessage("Please provide a last name."),
     
     body("account_email")
       .trim()
       .isEmail()
-      .normalizeEmail() // refer to validator.js docs
+      .normalizeEmail()
       .withMessage("A valid email is required.")
       .custom(async (account_email) => {
         const emailExists = await accountModel.checkExistingEmail(account_email);
@@ -71,17 +71,14 @@ validate.loginRules = () => {
  * Check Registration Data
  ************************************* */
 validate.checkRegData = async (req, res, next) => {
-  const { account_firstname, account_lastname, account_email } = req.body;
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
     res.render("account/register", {
-      errors,
+      errors: errors.array(),
       title: "Registration",
       nav,
-      account_firstname,
-      account_lastname,
-      account_email,
+      ...req.body,
     });
     return;
   }
@@ -92,15 +89,98 @@ validate.checkRegData = async (req, res, next) => {
  * Check Login Data
  ************************************* */
 validate.checkLoginData = async (req, res, next) => {
-  const { account_email } = req.body;
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
     res.render("account/login", {
-      errors,
+      errors: errors.array(),
       title: "Login",
       nav,
-      account_email, // Preserves the email field value
+      ...req.body,
+    });
+    return;
+  }
+  next();
+};
+
+/* **************************************
+ * Account Update Validation Rules
+ ************************************* */
+validate.updateAccountValidationRules = () => {
+  return [
+    body("account_firstname")
+      .trim()
+      .notEmpty()
+      .isLength({ min: 1 })
+      .withMessage("First name is required."),
+    
+    body("account_lastname")
+      .trim()
+      .notEmpty()
+      .isLength({ min: 1 })
+      .withMessage("Last name is required."),
+    
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Please enter a valid email address."),
+  ];
+};
+
+/* **************************************
+ * Check Account Update Data
+ ************************************* */
+validate.checkAccountUpdateData = async (req, res, next) => {
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    res.render("account/update", {
+      errors: errors.array(),
+      title: "Update Account Information",
+      nav,
+      ...req.body,
+    });
+    return;
+  }
+  next();
+};
+
+/* **************************************
+ * Password Validation Rules
+ ************************************* */
+validate.passwordValidationRules = () => {
+  return [
+    body("current_password")
+      .trim()
+      .notEmpty()
+      .withMessage("Current password is required."),
+    
+    body("new_password")
+      .trim()
+      .notEmpty()
+      .isStrongPassword({
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+      })
+      .withMessage("New password must meet the criteria: at least 8 characters, 1 uppercase, 1 lowercase, 1 number."),
+  ];
+};
+
+/* **************************************
+ * Check Password Data
+ ************************************* */
+validate.checkPasswordData = async (req, res, next) => {
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    res.render("account/update", {
+      errors: errors.array(),
+      title: "Update Account Information",
+      nav,
+      ...req.body,
     });
     return;
   }
@@ -127,15 +207,14 @@ validate.classificationValidationRules = () => {
  * Check Classification Data
  ************************************* */
 validate.checkClassificationData = async (req, res, next) => {
-  const { classification_name } = req.body;
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
     res.render("inventory/add-classification", {
-      errors,
+      errors: errors.array(),
       title: "Add Classification",
       nav,
-      classification_name, // Preserve field value
+      ...req.body,
     });
     return;
   }

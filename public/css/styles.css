@@ -717,7 +717,8 @@ main, footer {
 
 .add-inventory-form input,
 .add-inventory-form textarea,
-.add-inventory-form select {
+.add-inventory-form select,
+.edit-inventory-form textarea {
   width: 100%;
   padding: 0.8rem;
   border: 1px solid #ccc;
