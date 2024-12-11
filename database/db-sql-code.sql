@@ -249,3 +249,12 @@ SET inv_image = REPLACE (inv_image, '/images', '/images/vehicles');
 ----update records to add /vehicles on inv_thumbnail
 UPDATE inventory
 SET inv_thumbnail = REPLACE (inv_thumbnail, '/images', '/images/vehicles');
+---Inventory Review tables
+CREATE TABLE reviews (
+    review_id INT GENERATED ALWAYS AS IDENTITY,
+    review_text TEXT,
+    review_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    inv_id INT,
+    account_id INT,
+    PRIMARY KEY (review_id)
+);
