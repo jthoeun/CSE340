@@ -3,6 +3,7 @@ const router = express.Router();
 const accountController = require("../controllers/accountController");
 const utilities = require("../utilities");
 const regValidate = require("../utilities/account-validation");
+const reviewValidate = require("../utilities/review-validation");
 
 /* ***************************
  * Account Routes
@@ -34,6 +35,31 @@ router.get(
   "/register",
   utilities.handleErrors(accountController.buildRegister)
 );
+/* ***************************
+ * Account Management Review routes
+ * *************************** */
+// Route for updating a review (by review ID)
+router.get(
+  "/review/update/:review_id", 
+  utilities.handleErrors(accountController.buildReviewUpdateForm)
+);  // Show the update form
+
+router.post(
+  "/review/update/:review_id", 
+  utilities.handleErrors(accountController.processReviewUpdate)
+);  // Process the update
+
+// Route for deleting a review (by review ID)
+router.get(
+  "/review/delete/:review_id", 
+  utilities.handleErrors(accountController.buildReviewDeleteForm)
+);  // Show the delete confirmation form
+
+router.post(
+  "/review/delete/:review_id", 
+  utilities.handleErrors(accountController.processReviewDelete)
+);  // Process the deletion
+
 
 /* ***************************
  * Processing Account Routes

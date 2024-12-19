@@ -41,23 +41,60 @@ async function getVehicleById(inv_id) {
 }
 
 /* ***************************
+ * Get reviews for a specific vehicle by its inv_id
+ * ************************** */
+async function getReviewById(inv_id) {
+  try {
+    const sql = `
+      SELECT r.review_text, r.review_date, 
+             a.account_firstname  -- Change 'accounts' to 'account'
+      FROM public.reviews AS r
+      JOIN public.account AS a ON r.account_id = a.account_id  -- Change 'accounts' to 'account'
+      WHERE r.inv_id = $1
+      ORDER BY r.review_date DESC`; // Fetch reviews, ordered by date (most recent first)
+    const data = await pool.query(sql, [inv_id]);
+    return data.rows; // Return reviews
+  } catch (error) {
+    console.error("Error fetching reviews: " + error);
+    return []; // Return an empty array in case of error
+  }
+}
+
+/* ***************************
+ * Add a New Review
+ * ************************** */
+async function addReview(review) {
+  try {
+    const sql = `
+      INSERT INTO public.reviews (review_text, inv_id, account_id)
+      VALUES ($1, $2, $3)
+      RETURNING *`; // Return the inserted row to confirm
+    const result = await pool.query(sql, [review.review_text, review.inv_id, review.account_id]);
+
+    return result.rows[0];  // Return the inserted review object
+  } catch (error) {
+    console.error("Error adding review:", error);
+    return null; // Return null if there's an error
+  }
+}
+
+
+
+/* ***************************
  * Add New Classification
  * ************************** */
 async function addClassification(classification_name) {
   try {
-    // Insert the new classification into the classifications table
     const result = await pool.query(
       `INSERT INTO public.classification (classification_name) 
        VALUES ($1) 
        RETURNING classification_id, classification_name`,
       [classification_name]
     );
-
-    // Return the inserted classification data (for potential confirmation or use)
-    return result.rows[0];  
+    return result.rows[0];
   } catch (error) {
     console.error("Error in addClassification: " + error);
-    throw error; 
+    throw error;
   }
 }
 
@@ -91,7 +128,7 @@ async function addInventoryItem(vehicle) {
 }
 
 /* ***************************
- *  Update Inventory Data
+ * Update Inventory Data
  * ************************** */
 async function updateInventoryItem(
   inv_id,
@@ -107,7 +144,6 @@ async function updateInventoryItem(
   classification_id
 ) {
   try {
-    // Step 1: SQL Query to Update Inventory Item
     const sql = `
       UPDATE public.inventory
       SET 
@@ -122,9 +158,7 @@ async function updateInventoryItem(
         inv_color = $9,
         classification_id = $10
       WHERE inv_id = $11
-      RETURNING *`;  // Ensure we return the updated row
-
-    // Step 2: Run the SQL query with the passed-in values
+      RETURNING *`;
     const data = await pool.query(sql, [
       inv_make,
       inv_model,
@@ -136,20 +170,16 @@ async function updateInventoryItem(
       inv_miles,
       inv_color,
       classification_id,
-      inv_id // Ensure the inventory ID is the last parameter
+      inv_id
     ]);
-
-    // Step 3: Check if the update was successful
     if (data.rows.length === 0) {
       console.log("Inventory update failed: No rows were updated.");
-      return null;  // If no rows were updated, return null
+      return null;
     }
-
-    // Step 4: Return the updated inventory item
-    return data.rows[0]; // Return the updated row
+    return data.rows[0];
   } catch (error) {
-    console.error("Error updating inventory:", error); // Log any errors
-    return null; // Return null if there's an error
+    console.error("Error updating inventory:", error);
+    return null;
   }
 }
 
@@ -160,13 +190,64 @@ async function deleteInventoryItem(inv_id) {
   try {
     const sql = 'DELETE FROM public.inventory WHERE inv_id = $1';
     const data = await pool.query(sql, [inv_id]);
-
-    
-    return data.rowCount; 
+    return data.rowCount;
   } catch (error) {
-    console.error("Error deleting inventory item:", error); 
-    return 0; 
+    console.error("Error deleting inventory item:", error);
+    return 0;
   }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getVehicleById, addClassification, addInventoryItem, updateInventoryItem, deleteInventoryItem };
+/* ***************************
+ * Get Reviews by Account ID
+ * ************************** */
+async function getReviewsByAccountId(account_id) {
+  try {
+    const sql = `
+      SELECT r.review_text, r.review_date, v.inv_make, v.inv_model, r.review_id
+      FROM public.reviews AS r
+      JOIN public.inventory AS v ON r.inv_id = v.inv_id
+      JOIN public.account AS a ON r.account_id = a.account_id  -- Change 'accounts' to 'account'
+      WHERE r.account_id = $1
+      ORDER BY r.review_date DESC`;
+    const data = await pool.query(sql, [account_id]);
+    return data.rows; // Return reviews
+  } catch (error) {
+    console.error("Error fetching reviews by account:", error);
+    return [];  // Return an empty array in case of error
+  }
+}
+
+
+/* ***************************
+ * Update Review in Database
+ * ************************** */
+async function updateReview(review_id, review_text) {
+  try {
+    const sql = `
+      UPDATE public.reviews
+      SET review_text = $1
+      WHERE review_id = $2
+      RETURNING *`; // Return the updated row to confirm
+    const result = await pool.query(sql, [review_text, review_id]);
+
+    return result.rows[0];  // Return the updated review object
+  } catch (error) {
+    console.error("Error updating review:", error);
+    return null; // Return null if there's an error
+  }
+}
+
+
+module.exports = { 
+  getClassifications, 
+  getInventoryByClassificationId, 
+  getVehicleById, 
+  getReviewById, 
+  addReview, 
+  addClassification, 
+  addInventoryItem, 
+  updateInventoryItem, 
+  deleteInventoryItem,
+  getReviewsByAccountId,
+  updateReview, 
+};
