@@ -40,6 +40,39 @@
       <a href="/inv" class="btn-primary">Manage Inventory</a>
     </p>
   <% } %>
+
+  <!-- Displaying Reviews Written by the Logged-in Client -->
+  <h3>Your Reviews</h3>
+  
+  <% if (reviews && reviews.length > 0) { %>
+    <!-- Reviews Table -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Review</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reviews.forEach(review => { %>
+          <tr>
+            <td><%= review.inv_make %> <%= review.inv_model %></td>
+            <td><%= review.review_text %></td>
+            <td><%= new Date(review.review_date).toLocaleDateString() %></td>
+            <td>
+              <a href="/account/review/update/<%= review.review_id %>" class="btn-primary">Update</a>
+              <a href="/account/review/delete/<%= review.review_id %>" class="btn-danger">Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>You have not written any reviews yet.</p>
+  <% } %>
+
 <% } else { %>
   <p>You must be logged in to view this page.</p>
 <% } %>

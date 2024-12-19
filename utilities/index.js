@@ -42,6 +42,7 @@ utilities.handleErrors = (fn) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
+
 /* *******************************
  * Get Classifications from DB
  ******************************* */
@@ -86,15 +87,30 @@ utilities.buildClassificationGrid = async function (data) {
 /* **************************************
  * Build Vehicle Detail View HTML
  ************************************ */
-utilities.buildVehicleDetail = async function (vehicle) {
+utilities.buildVehicleDetail = async function (vehicle, reviews) {
   let detail = `<h1>${vehicle.inv_make} ${vehicle.inv_model} ${vehicle.inv_year}</h1>`;
   detail += `<div class="vehicle-image"><img src="/images/vehicles/${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}"></div>`;
   detail += `<div class="vehicle-info">`;
   detail += `<p><strong>Price:</strong> $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>`;
-  detail += `<p><strong>Mileage:</strong> ${new Intl.NumberFormat('en-US').format(vehicle.inv_mileage)} miles</p>`;
+  detail += `<p><strong>Mileage:</strong> ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)} miles</p>`;
   detail += `<p><strong>Description:</strong> ${vehicle.inv_description}</p>`;
   detail += `<p><strong>Color:</strong> ${vehicle.inv_color}</p>`;  // Add color detail
   detail += "</div>";
+
+  // Add reviews section to the detail view
+  detail += `<h2>Reviews</h2>`;
+  
+  if (reviews.length > 0) {
+    reviews.forEach(review => {
+      detail += `<div class="review">
+                    <p><strong>${review.screen_name}</strong></p>
+                    <p>${review.review_text}</p>
+                    <p><em>Reviewed on: ${new Date(review.review_date).toLocaleDateString()}</em></p>
+                 </div>`;
+    });
+  } else {
+    detail += `<p>No reviews yet. Be the first to review this vehicle!</p>`;
+  }
 
   return detail;
 };
@@ -134,6 +150,6 @@ utilities.checkLogin = (req, res, next) => {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
-}
+};
 
 module.exports = utilities;

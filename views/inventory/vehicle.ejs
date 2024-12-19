@@ -1,39 +1,68 @@
 <%# Vehicle Detail View %>
 <% if (title) { %>
   <h1><%= title %></h1> <!-- Display the vehicle make and model as the main heading -->
-<% } else {
-  res.redirect('/')
-} %>
+<% } else { %>
+  <% res.redirect('/') %>
+<% } %>
+
 <div class="background"></div>
+
 <main class="vehicle-detail">
   <div class="container">
-      <!-- Vehicle Image Section -->
-      <section class="vehicle-content">
-          <div class="vehicle-image">
-              <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+    <!-- Vehicle Image Section -->
+    <section class="vehicle-content">
+      <div class="vehicle-image">
+        <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+      </div>
+
+      <!-- Vehicle Info Section -->
+      <div class="vehicle-info">
+        <!-- Make and Model -->
+        <p><strong>Make:</strong> <%= vehicle.inv_make %></p>
+        <p><strong>Model:</strong> <%= vehicle.inv_model %></p>
+        <p><strong>Year:</strong> <%= vehicle.inv_year %></p>
+
+        <!-- Price with proper formatting -->
+        <p><strong>Price:</strong> $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
+
+        <!-- Mileage (inv_miles) with proper formatting -->
+        <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(vehicle.inv_miles) %> miles</p>
+
+        <!-- Description -->
+        <h3>Description</h3>
+        <p><%= vehicle.inv_description %></p>
+
+        <!-- Color -->
+        <p><strong>Color:</strong> <%= vehicle.inv_color %></p>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews">
+      <h3>Reviews</h3>
+
+      <% if (reviews && reviews.length > 0) { %>
+        <% reviews.forEach(function(review) { %>
+          <div class="review">
+            <p><strong><%= review.screen_name %>:</strong> <%= review.review_text %></p>
+            <p><small><%= new Date(review.review_date).toLocaleDateString() %></small></p>
           </div>
+        <% }); %>
+      <% } else { %>
+        <p>No reviews yet. Be the first to leave a review!</p>
+      <% } %>
 
-          <!-- Vehicle Info Section -->
-          <div class="vehicle-info">
-              <!-- Make and Model -->
-              <p><strong>Make:</strong> <%= vehicle.inv_make %></p>
-              <p><strong>Model:</strong> <%= vehicle.inv_model %></p>
-              <p><strong>Year:</strong> <%= vehicle.inv_year %></p>
-
-              <!-- Price with proper formatting -->
-              <p><strong>Price:</strong> $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %></p>
-
-              <!-- Mileage (inv_miles) with proper formatting -->
-              <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(vehicle.inv_miles) %> miles</p>
-
-              <!-- Description -->
-              <h3>Description</h3>
-              <p><%= vehicle.inv_description %></p>
-
-              <!-- Color -->
-              <p><strong>Color:</strong> <%= vehicle.inv_color %></p>
-
-          </div>
-      </section>
+      <% if (loggedin) { %>
+        <form action="/inv/vehicle/<%= vehicle.inv_id %>/review" method="POST">
+          <textarea name="review_text" rows="5" placeholder="Write your review..." required></textarea>
+          <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
+          <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
+          <p><strong>Your screen name:</strong> <%= accountData.firstname %></p>
+          <button type="submit">Submit Review</button>
+        </form>
+      <% } else { %>
+        <p>Please <a href="/account/login">log in</a> to leave a review.</p>
+      <% } %>
+    </section>
   </div>
 </main>

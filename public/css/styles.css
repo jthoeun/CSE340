@@ -559,6 +559,28 @@ main, footer {
     width: 100%;
     font-size: 1.1em;
   }
+  /* Stack the table headers vertically */
+  table, th, td {
+    font-size: 14px;
+  }
+
+  /* Stack table rows on mobile */
+  td, th {
+    padding: 8px;
+  }
+
+  /* Stack buttons vertically */
+  td a {
+    display: block;
+    width: auto; /* Let the width adjust on small screens */
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .reviews-message {
+    font-size: 1em;
+  }
 }
 
 /* Flash Message Styling */
@@ -844,4 +866,130 @@ input:invalid, textarea:invalid, select:invalid {
 
 #inventoryDisplay td a.delete:hover {
   background-color: #c0392b;
+}
+.review-delete {
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.review-text {
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-secondary {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.btn-secondary:hover {
+  background-color: #2980b9;
+}
+/* General Styles for Review Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+/* Table Header */
+th {
+  background-color: #007BFF;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Table Rows */
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Action Button Styles */
+td a {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-align: center;
+  font-weight: bold;
+  width: 120px; /* Ensure buttons have the same width */
+  margin: 0 10px; /* Add horizontal margin to space out the buttons */
+}
+
+/* Center the buttons */
+td {
+  text-align: center;
+}
+
+/* Update Button */
+td a.update {
+  background-color: #007BFF;
+}
+
+td a.update:hover {
+  background-color: #0056b3;
+}
+
+/* Delete Button */
+td a.delete {
+  background-color: #e74c3c;
+}
+
+td a.delete:hover {
+  background-color: #c0392b;
+}
+
+/* Empty reviews message */
+.reviews-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  margin-top: 20px;
+}
+
+/* Styling for Action Buttons under reviews */
+.reviews .btn-primary {
+  margin-top: 20px;
+  background-color: #007BFF;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+}
+
+.reviews .btn-primary:hover {
+  background-color: #0056b3;
 }

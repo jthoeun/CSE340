@@ -1,0 +1,37 @@
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else { %>
+  <% res.redirect('/') %>
+<% } %>
+
+<div class="background"></div>
+
+<!-- Flash Message -->
+<% if (flashMessage) { %>
+  <div class="flash-message alert alert-success">
+    <%= flashMessage %>
+  </div>
+<% } %>
+
+
+<main class="review-delete">
+  <div class="container">
+    <h3>Are you sure you want to delete your review for <%= vehicle.inv_make %> <%= vehicle.inv_model %>?</h3>
+    
+    <!-- Display review text -->
+    <div class="review-text">
+      <p><strong>Review:</strong> <%= review_text %></p>
+    </div>
+
+    <!-- Form to delete the review -->
+    <form action="/account/review/delete/<%= review_id %>" method="POST">
+      <input type="hidden" name="review_id" value="<%= review_id %>">
+      <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
+      <input type="hidden" name="account_id" value="<%= account_id %>">
+      <div class="form-actions">
+        <button type="submit" class="btn-danger">Delete Review</button>
+        <a href="/inv/vehicle/<%= vehicle.inv_id %>" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</main>

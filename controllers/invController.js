@@ -10,22 +10,23 @@ const invCont = {};
 invCont.buildManagement = async function (req, res, next) {
   try {
     let nav = await utilities.getNav();
-    const classificationOptions = await utilities.getClassifications();  
+    const classificationOptions = await utilities.getClassifications();
 
     res.render("inventory/management", {
       title: "Inventory Management",
       nav,
-      flashMessage: req.flash("notice") || null,  // Display flash messages if any
-      classificationOptions, 
+      flashMessage: req.flash("notice") || null, // Display flash messages if any
+      classificationOptions,
     });
   } catch (err) {
     next(err);
   }
 };
 
+
 /* ***************************
  * Build Edit Inventory View
- * ************************** */
+ * *************************** */
 invCont.editInventory = async function (req, res, next) {
   const inv_id = parseInt(req.params.inv_id); // Collect inventory ID
   if (isNaN(inv_id)) {
@@ -396,12 +397,16 @@ invCont.buildByClassificationId = async function (req, res, next) {
 };
 
 /* ***************************
- * Build vehicle detail view
+ * Build Vehicle Detail View (with Reviews)
  * *************************** */
 invCont.buildVehicleDetail = async function (req, res, next) {
   const inv_id = req.params.inv_id;
 
+  // Fetch vehicle data
   const vehicle = await invModel.getVehicleById(inv_id);
+
+  // Fetch reviews for this vehicle
+  const reviews = await invModel.getReviewById(inv_id);
 
   if (!vehicle) {
     return res.status(404).render("404", {
@@ -410,13 +415,17 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     });
   }
 
-  let nav = await utilities.getNav();
+  const nav = await utilities.getNav();
   res.render("./inventory/vehicle", {
     title: `${vehicle.inv_make} ${vehicle.inv_model}`,
     nav,
     vehicle,
+    reviews: reviews,  // Pass reviews to the view
+    loggedIn: req.session.loggedin || false, // Check if the user is logged in
+    user: req.session.user || null, // Fetch user data from session
   });
 };
+
 
 /* ***************************
  *  Return Inventory by Classification As JSON
@@ -430,5 +439,128 @@ invCont.getInventoryJSON = async (req, res, next) => {
     next(new Error("No data returned"))
   }
 }
+
+/* ***************************
+ * Update Review
+ * ************************** */
+invCont.updateReview = async function (req, res, next) {
+  const { review_text, inv_id, account_id } = req.body;  // Get review text, inventory ID, and account ID from the form
+  const review_id = req.params.review_id;  // Get review ID from URL
+  
+  try {
+    // Validation: Ensure review_text is not empty
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash("notice", "Please ensure the review text is not empty.");
+      return res.status(400).render("reviews/review-update", {
+        title: "Update Review",
+        flashMessage: req.flash("notice"),
+        errors: errors.array(),
+        review_id,
+        review_text,
+        inv_id,
+        account_id,
+      });
+    }
+
+    // Get the review by ID to ensure it belongs to the correct user
+    const review = await invModel.getReviewById(review_id);
+
+    if (!review) {
+      req.flash("notice", "Review not found.");
+      return res.redirect("/account");  // Redirect if the review doesn't exist
+    }
+
+    // Check if the logged-in user is the author of the review
+    if (review.account_id !== account_id) {
+      req.flash("notice", "You can only update your own reviews.");
+      return res.redirect("/account");
+    }
+
+    // Update the review text in the database
+    const updateResult = await invModel.updateReview(review_id, review_text);
+    
+    if (updateResult) {
+      req.flash("notice", "Your review has been updated successfully.");
+      return res.redirect(`/inv/vehicle/${inv_id}`);  // Redirect to the vehicle's detail page
+    } else {
+      req.flash("notice", "Error updating the review. Please try again.");
+      return res.redirect(`/review/update/${review_id}`);  // Redirect back to the update page if there's an error
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ***************************
+ * Get a Review by ID (Helper function)
+ * ************************** */
+invCont.getReviewById = async function (review_id) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM public.reviews WHERE review_id = $1`,
+      [review_id]
+    );
+    return data.rows[0]; // Return the first (and only) result
+  } catch (error) {
+    console.error("Error in getReviewById:", error);
+    return null;  // Return null if there's an error
+  }
+};
+
+/* ***************************
+ * Add Review
+ * *************************** */
+invCont.addReview = async function (req, res, next) {
+  const { review_text, inv_id, account_id } = req.body;  // Only the necessary fields are passed
+  try {
+    // Ensure the review text is not empty
+    if (!review_text || review_text.trim() === "") {
+      req.flash("notice", "Review text cannot be empty.");
+      return res.redirect(`/inv/vehicle/${inv_id}`);
+    }
+
+    // Add the review to the database
+    const newReview = await invModel.addReview({
+      review_text,
+      inv_id,
+      account_id,  // Only pass the account_id and inv_id
+    });
+
+    // If the review was successfully added, redirect to the vehicle page
+    if (newReview) {
+      req.flash("notice", "Thank you for your review!");
+      return res.redirect(`/inv/vehicle/${inv_id}`); // Redirect to the vehicle detail page
+    } else {
+      req.flash("notice", "Error adding your review. Please try again.");
+      return res.redirect(`/inv/vehicle/${inv_id}`);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+/* ***************************
+ * Update Review in Database
+ * ************************** */
+invCont.updateReviewInDb = async function (review_id, review_text) {
+  try {
+    const sql = `
+      UPDATE public.reviews
+      SET review_text = $1
+      WHERE review_id = $2
+      RETURNING *`;
+    const result = await pool.query(sql, [review_text, review_id]);
+    return result.rowCount > 0;  // If a row was updated, return true
+  } catch (error) {
+    console.error("Error updating review:", error);
+    return false;  // Return false if there's an error
+  }
+};
+
+
+
 
 module.exports = invCont;

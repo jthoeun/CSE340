@@ -99,6 +99,8 @@ async function updatePassword(account_id, hashedPassword) {
   }
 }
 
+
+
 module.exports = { 
   registerAccount, 
   checkExistingEmail, 

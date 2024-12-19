@@ -1,7 +1,10 @@
 const bcrypt = require("bcryptjs");
 const utilities = require("../utilities");
 const accountModel = require("../models/account-model");
+const invModel = require("../models/inventory-model"); // Added this for fetching reviews
 const jwt = require("jsonwebtoken");
+const pool = require("../database");
+const { updateReview, deleteReview } = require("./invController");
 require("dotenv").config();
 
 /* ****************************************
@@ -45,6 +48,9 @@ async function buildAccountManagement(req, res, next) {
   try {
     let nav = await utilities.getNav();
     const accountData = res.locals.accountData;  // Use the account data from res.locals
+    
+    // Fetch reviews related to the logged-in user
+    const reviews = await invModel.getReviewsByAccountId(accountData.account_id);  // Fetch reviews from the model
 
     res.render("account/manage", {
       title: "Account Management",
@@ -52,6 +58,7 @@ async function buildAccountManagement(req, res, next) {
       flashMessage: req.flash("notice") || null,
       errors: null,
       accountData, // Pass user data to the view
+      reviews: reviews || [],  // Pass the reviews array to the view, if any
     });
   } catch (err) {
     next(err);
@@ -306,6 +313,122 @@ async function accountLogin(req, res, next) {
     next(error);
   }
 }
+/* ***************************
+ * Update Review Form
+ * *************************** */
+async function buildReviewUpdateForm(req, res, next) {
+  const review_id = req.params.review_id;
+  try {
+    const sql = `
+      SELECT r.review_text, r.inv_id, a.account_firstname
+      FROM public.reviews AS r
+      JOIN public.account AS a ON r.account_id = a.account_id
+      WHERE r.review_id = $1;`;
+    const data = await pool.query(sql, [review_id]);
+    const review = data.rows[0]; // Get the first row (if it exists)
+
+    if (!review) {
+      req.flash("notice", "Review not found.");
+      return res.redirect("/account"); // Redirect if review doesn't exist
+    }
+    const nav = await utilities.getNav();
+
+    res.render("account/review/review-update", {
+      title: "Update Review",
+      review,
+      flashMessage: req.flash("notice"),
+      errors: req.flash("errors") ||[],
+      nav,
+    });
+  } catch (err) {
+    next(err); // Pass any errors to the error handler
+  }
+}
+/* ***************************
+ * Process Review Update
+ * *************************** */
+async function processReviewUpdate(req, res, next) {
+  const { review_text } = req.body; // Get review text from form
+  const review_id = req.params.review_id; // Get the review ID from URL
+
+  try {
+    // Validate the review text (optional if already handled in middleware)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash("notice", "Review text cannot be empty.");
+      return res.redirect(`/account/review/update/${review_id}`); // Ensure the URL is correct
+    }
+
+    // Perform the update in the database
+    const updatedReview = await invModel.updateReview(review_id, review_text);
+
+    if (updatedReview) {
+      req.flash("notice", "Your review has been updated.");
+      return res.redirect("/account"); // Redirect back to account management page after a successful update
+    } else {
+      req.flash("notice", "Error updating the review.");
+      return res.redirect(`/account/review/update/${review_id}`); // If error, redirect back to the update page
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+/* ***************************
+ * Build Delete Review Confirmation Form
+ * *************************** */
+async function buildReviewDeleteForm(req, res, next) {
+  const review_id = req.params.review_id; // Get review ID from URL
+  try {
+    const review = await invModel.getReviewById(review_id); // Fetch review data
+    if (!review) {
+      req.flash("notice", "Review not found.");
+      return res.status(404).redirect("/account");
+    }
+    if (review.account_id !== res.locals.accountData.account_id) {
+      req.flash("notice", "You can only delete your own reviews.");
+      return res.redirect("/account");
+    }
+    res.render("account/review/review-delete", {
+      title: "Delete Review",
+      review,
+      flashMessage: req.flash("notice"),
+    });
+  } catch (err) {
+    console.error("Error in buildReviewDeleteForm:", err);
+    next(err);
+  }
+}
+
+/* ***************************
+ * Process Review Deletion
+ * *************************** */
+async function processReviewDelete(req, res, next) {
+  const review_id = req.params.review_id; // Get review ID from URL
+  const account_id = res.locals.accountData.account_id; // Get the account ID of the logged-in user
+
+  try {
+    // Fetch the review by ID
+    const review = await invModel.getReviewById(review_id);
+
+    // Ensure the logged-in user owns this review
+    if (review.account_id !== account_id) {
+      req.flash("notice", "You can only delete your own reviews.");
+      return res.redirect("/account"); // Redirect if the user doesn't own the review
+    }
+
+    const deleteResult = await invModel.deleteReview(review_id); // Delete the review from the database
+
+    if (deleteResult) {
+      req.flash("notice", "Your review has been deleted.");
+      return res.redirect("/account"); // Redirect back to account management page after deletion
+    } else {
+      req.flash("notice", "Error deleting the review.");
+      return res.redirect(`/review/delete/${review_id}`); // If error, redirect to delete page
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   buildLogin,
@@ -315,5 +438,9 @@ module.exports = {
   buildAccountManagement,
   updatePassword,
   buildUpdate,
-  updateAccount
+  updateAccount,
+  processReviewUpdate,
+  processReviewDelete,
+  buildReviewUpdateForm,
+  buildReviewDeleteForm
 };

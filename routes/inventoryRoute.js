@@ -3,6 +3,7 @@ const invController = require("../controllers/invController");
 const utilities = require("../utilities");
 const inventoryValidate = require("../utilities/inventory-validation");
 const classificationValidate = require("../utilities/classification-validation");
+const reviewValidate = require("../utilities/review-validation"); // Import review validation
 const router = express.Router();
 
 /* ***************************
@@ -60,6 +61,30 @@ router.post(
 );
 
 /* ***************************
+ * Review Routes
+ * *************************** */
+
+// Route to submit a new review for a vehicle
+router.post(
+  "/vehicle/:inv_id/review",  
+  reviewValidate.reviewValidationRules(),
+  reviewValidate.checkReviewData, 
+  utilities.handleErrors(invController.addReview) 
+);
+
+// Route for displaying the update form for a review (GET request)
+router.get("/review/update/:review_id", utilities.handleErrors(invController.buildReviewUpdateForm));  // Show the update form
+
+// Route for processing the update of a review (POST request)
+router.post("/review/update/:review_id", utilities.handleErrors(invController.updateReview));  // Process the update
+
+// Route for displaying a confirmation page for deleting a review (GET request)
+router.get("/review/delete/:review_id", utilities.handleErrors(invController.buildReviewDeleteForm));  // Show delete confirmation page
+
+// Route for processing the deletion of a review (POST request)
+router.post("/review/delete/:review_id", utilities.handleErrors(invController.deleteReview));  // Perform the deletion
+
+/* ***************************
  * Intentional Error Route
  * *************************** */
 router.get("/trigger-error", (req, res, next) => {
@@ -69,6 +94,6 @@ router.get("/trigger-error", (req, res, next) => {
 });
 
 // JavaScript Route to return inventory based on classification ID
-router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON));
 
 module.exports = router;
